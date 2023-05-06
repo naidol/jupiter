@@ -1,0 +1,21 @@
+{
+    "ros.distro": "humble",
+    "python.autoComplete.extraPaths": [
+        "/home/logan/jupiter_ws/install/i9robot_voice/lib/python3.10/site-packages",
+        "/home/logan/jupiter_ws/install/i9robot_camera/lib/python3.10/site-packages",
+        "/home/logan/i9robot_ws/install/i9robot_voice/lib/python3.10/site-packages",
+        "/home/logan/i9robot_ws/install/i9robot_camera/lib/python3.10/site-packages",
+        "/home/logan/uros_ws/install/micro_ros_msgs/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/logan/jupiter_ws/install/i9robot_voice/lib/python3.10/site-packages",
+        "/home/logan/jupiter_ws/install/i9robot_camera/lib/python3.10/site-packages",
+        "/home/logan/i9robot_ws/install/i9robot_voice/lib/python3.10/site-packages",
+        "/home/logan/i9robot_ws/install/i9robot_camera/lib/python3.10/site-packages",
+        "/home/logan/uros_ws/install/micro_ros_msgs/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}

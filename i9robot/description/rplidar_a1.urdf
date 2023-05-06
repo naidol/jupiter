@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<robot name="rp_lidar_a1">
+  <link name="rp_lidar_a1_link">
+    <visual>
+      <geometry>
+        <mesh filename="/home/logan/i9robot_ws/src/i9robot/meshes/rplidar_a1.dae"/>
+      </geometry>
+    </visual>
+  </link>
+</robot>
