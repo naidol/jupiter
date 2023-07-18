@@ -114,7 +114,7 @@ class FaceRecognitionNode(Node):
     def greet_face(self, face):
             if face in self.faces_list:
                 elapsed_time = time.time() - self.remember_face_timer
-                if elapsed_time > 20.0:         #adjust time so that faces are only greeted again after the set elapsed time
+                if elapsed_time > 300.0:         #adjust time so that faces are only greeted again after the set elapsed time
                     self.send_voice_tts('Welcome back ' + face)
                     #self.faces_list.remove(face)
                     self.remember_face_timer = time.time()
