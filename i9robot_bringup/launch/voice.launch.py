@@ -18,7 +18,7 @@ def generate_launch_description():
             package='i9robot_voice',
             executable='voice_tts'
          )
-    
+
     return LaunchDescription([
         voice_recognition_node,
         voice_command_node,
