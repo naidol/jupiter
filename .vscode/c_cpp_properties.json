@@ -9,8 +9,8 @@
         "/home/logan/uros_ws/install/micro_ros_agent/include/**",
         "/home/logan/uros_ws/install/micro_ros_msgs/include/**",
         "/opt/ros/humble/include/**",
-        "/home/logan/jupiter_ws/src/jupiter/i9robot_bringup/include/**",
-        "/home/logan/jupiter_ws/src/jupiter/i9robot_gazebo/include/**",
+        "/home/logan/jupiter_ws/src/jupiter/jupiter_bringup/include/**",
+        "/home/logan/jupiter_ws/src/jupiter/jupiter_gazebo/include/**",
         "/usr/include/**"
       ],
       "name": "ROS",
