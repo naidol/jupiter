@@ -15,20 +15,20 @@ def generate_launch_description():
         [FindPackageShare('jupiter_bringup'), 'launch', 'microros.launch.py']
     )
     sensors_launch_path = PathJoinSubstitution(
-        [FindPackageShare('jupiter'), 'launch', 'sensors.launch.py']
+        [FindPackageShare('jupiter_bringup'), 'launch', 'sensors.launch.py']
     )
     description_launch_path = PathJoinSubstitution(
-        [FindPackageShare('jupiter'), 'launch', 'description.launch.py']
+        [FindPackageShare('jupiter_bringup'), 'launch', 'description.launch.py']
     )
     joystick_launch_path = PathJoinSubstitution(
-        [FindPackageShare('jupiter'), 'launch', 'joystick.launch.py']
+        [FindPackageShare('jupiter_bringup'), 'launch', 'joystick.launch.py']
     )
 
     return LaunchDescription([
         
         DeclareLaunchArgument(
             name='base_serial_port', 
-            default_value='/dev/ttyACM0',
+            default_value='/dev/ttyUSB0', # ESP32 micro-controller connected to USB0
             description='Base Serial Port'
         ),
 

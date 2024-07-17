@@ -13,7 +13,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             name='base_serial_port', 
-            default_value='/dev/ttyACM0',
+            default_value='/dev/ttyUSB0',  #USB port connected to ESP32 micro-controller
             description='Base Serial Port'
         ),
         Node(

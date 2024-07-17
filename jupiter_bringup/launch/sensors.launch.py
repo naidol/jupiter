@@ -11,35 +11,25 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
         
-    
-    # DeclareLaunchArgument(
-    #         name='sensor', 
-    #         default_value='rplidar',
-    #         description='Sensor to launch'
-    #     ),
-    # DeclareLaunchArgument(
-    #         name='frame_id', 
-    #         default_value='laser',
-    #         description='Laser Frame ID'
-    #     ),
-
     return LaunchDescription([
         
-        # LAUNCH THE RP-LIDAR SENSOR 
+        # LAUNCH THE LD-LIDAR SENSOR 
         Node(
-            #condition=LaunchConfigurationEquals('sensor', 'rplidar'),
-            name='rplidar_composition',
-            package='rplidar_ros',
-            executable='rplidar_composition',
+            name='ldlidar_node',
+            package='ldlidar_stl_ros2',
+            executable='ldlidar_stl_ros2_node',
             output='screen',
-            #remappings=[('scan', LaunchConfiguration('topic_name'))],
-            parameters=[{
-                'serial_port': '/dev/ttyUSB0',
-                'serial_baudrate': 115200,  # A1 / A2
-                'frame_id': 'laser',
-                'inverted': False,
-                'angle_compensate': True,
-            }],
+            parameters=[
+                {'product_name': 'LDLiDAR_LD19'},
+                {'topic_name': 'scan'},
+                {'frame_id': 'base_laser'},
+                {'port_name': '/dev/ttyUSB1'},  # LDLIDAR connected to USB1
+                {'port_baudrate': 230400},
+                {'laser_scan_dir': True},
+                {'enable_angle_crop_func': False},
+                {'angle_crop_min': 135.0},
+                {'angle_crop_max': 225.0}
+            ]
         ),
 
         # LAUNCH THE PS2 CAMERA SENSOR 
