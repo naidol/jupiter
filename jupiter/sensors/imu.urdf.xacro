@@ -1,11 +1,22 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="imu">
-    <link name="imu_link"/>
+    <link name="imu_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.030 0.020 0.005"/>
+          <!-- <mesh filename="" scale="0.001 0.001 0.001"/> -->
+        </geometry>
+        <material name="red">
+          <color rgba="0.416 0.051 0.047 1.0"/>
+        </material>
+      </visual>
+    </link>
     
     <joint name="imu_to_base_link" type="fixed">
       <parent link="base_link"/>
       <child link="imu_link"/>
-      <origin xyz="0.130 0 0.015" rpy="0 0 0"/>
+      <origin xyz="0.015 0 0.070" rpy="0 0 0"/>
     </joint>
 
     <gazebo reference="imu_link">
@@ -31,5 +42,6 @@
         <pose>0 0 0 0 0 0</pose>
       </sensor>
     </gazebo>
+
   </xacro:macro>
 </robot>

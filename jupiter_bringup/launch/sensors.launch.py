@@ -22,9 +22,9 @@ def generate_launch_description():
             parameters=[
                 {'product_name': 'LDLiDAR_LD19'},
                 {'topic_name': 'scan'},
-                {'frame_id': 'base_laser'},
+                {'frame_id': 'laser_link'},      # Set the frame_id to the robot frame base_link - original = base_laser
                 {'port_name': '/dev/ttyUSB1'},  # LDLIDAR connected to USB1
-                {'port_baudrate': 230400},
+                {'port_baudrate': 230400},      # Set the optimum baud - original = 230400
                 {'laser_scan_dir': True},
                 {'enable_angle_crop_func': False},
                 {'angle_crop_min': 135.0},
@@ -32,17 +32,26 @@ def generate_launch_description():
             ]
         ),
 
-        # LAUNCH THE PS2 CAMERA SENSOR 
+        # # base_link to base_laser tf node
+        # Node(
+        #     package='tf2_ros',
+        #     executable='static_transform_publisher',
+        #     name='base_link_to_base_laser_ld19',
+        #     arguments=['0.060','0.000','0.145','0','0','0','base_link','laser_link']
+        # ),
+
+        # LAUNCH THE USB CAMERA SENSOR 
         Node(
+            name='camera_node',
             package='usb_cam',
             executable='usb_cam_node_exe',
-            # output='screen',
+            output='screen',
             # namespace='camera',
-            # parameters=[{
-            #     'image_size': [640,480],
-            #     'time_per_frame': [1, 6],
-            #     'camera_frame_id': 'camera_link_optical'
-            #     }]
-        ),
+            parameters=[
+                {'image_size': [640,480]},
+                {'time_per_frame': [1, 6]},
+                {'camera_frame_id': 'camera_link'}
+            ]
+        )
     ])
 

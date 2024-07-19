@@ -1,11 +1,11 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:property name="M_PI" value="3.1415926535897931" />
-  <xacro:macro name="depth_sensor" params="*origin">
+  <xacro:macro name="camera">
     <link name="camera_link">
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="0.030 0.124 0.030"/>
+          <box size="0.020 0.095 0.050"/>
           <!-- <mesh filename="" scale="0.001 0.001 0.001"/> -->
         </geometry>
         <material name="red">
@@ -16,7 +16,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="0.030 0.124 0.030"/>
+          <box size="0.020 0.095 0.050"/>
         </geometry>
       </collision>
 
@@ -28,6 +28,13 @@
                  izz="${(1/12) * 0.135 * ((0.030 * 0.030) + (0.124  * 0.124))}"/>
       </inertial>
     </link>
+
+    <joint name="camera_to_base_link" type="fixed">
+      <parent link="base_link"/>
+      <child link="camera_link"/>
+      <origin xyz="0.120 0 0.020" rpy="0 0 0"/>
+    </joint>
+
     
     <gazebo reference="camera_link">  
       <visual>  
@@ -40,19 +47,7 @@
       </visual> 
     </gazebo>
 
-    <joint name="camera_to_base_link" type="fixed">
-      <parent link="base_link"/>
-      <child link="camera_link"/>
-      <xacro:insert_block name="origin" />
-    </joint>
-
-    <link name="camera_depth_link"/>
-    <joint name="camera_depth_joint" type="fixed">
-      <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
-      <parent link="camera_link"/>
-      <child link="camera_depth_link"/>
-    </joint>
-
+    
     <!-- https://github.com/ros-simulation/gazebo_ros_pkgs/wiki/ROS-2-Migration:-Camera#gazebo_ros_camera -->
     <gazebo reference="camera_link">
       <sensor name="camera" type="depth">

@@ -13,11 +13,11 @@
   <xacro:property name="wheel_mass" value=".150" />
   <xacro:property name="wheel_torque" value="20" />
 
+  <xacro:property name="usb_lidar" value="/dev/ttyUSB1" />
+  <xacro:property name="usb_mcu" value="/dev/ttyUSB0" />
+
   <xacro:property name="laser_pose">
     <origin xyz="0.060 0 0.145" rpy="0 0 0"/>
   </xacro:property>
 
-  <xacro:property name="depth_sensor_pose">
-    <origin xyz="0.080 0 0.020" rpy="0 0 0"/>
-  </xacro:property>
 </robot>
