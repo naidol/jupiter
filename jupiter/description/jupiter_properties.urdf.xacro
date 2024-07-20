@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- jupiter robot property settings - change the robot dimensions and wheel properties HERE -->
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:property name="base_length" value="0.305" />
   <xacro:property name="base_width" value="0.280" />
@@ -15,9 +16,5 @@
 
   <xacro:property name="usb_lidar" value="/dev/ttyUSB1" />
   <xacro:property name="usb_mcu" value="/dev/ttyUSB0" />
-
-  <xacro:property name="laser_pose">
-    <origin xyz="0.060 0 0.145" rpy="0 0 0"/>
-  </xacro:property>
 
 </robot>

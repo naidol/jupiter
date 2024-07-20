@@ -5,9 +5,10 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /LaserScan1
-        - /Image1
         - /Image1/Topic1
+        - /Imu1
+        - /Imu1/Box properties1
+        - /Imu1/Axes properties1
       Splitter Ratio: 0.5
     Tree Height: 604
 Visualization Manager:
@@ -58,6 +59,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         front_left_wheel_link:
           Alpha: 1
           Show Axes: false
@@ -72,10 +78,12 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         laser_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         rear_left_wheel_link:
           Alpha: 1
           Show Axes: false
@@ -103,6 +111,8 @@ Visualization Manager:
           Value: true
         base_link:
           Value: true
+        camera_link:
+          Value: true
         front_left_wheel_link:
           Value: true
         front_right_wheel_link:
@@ -110,6 +120,8 @@ Visualization Manager:
         imu_link:
           Value: true
         laser_link:
+          Value: true
+        odom:
           Value: true
         rear_left_wheel_link:
           Value: true
@@ -123,18 +135,22 @@ Visualization Manager:
       Tree:
         base_footprint:
           base_link:
-            front_left_wheel_link:
-              {}
-            front_right_wheel_link:
+            camera_link:
               {}
             imu_link:
               {}
             laser_link:
               {}
-            rear_left_wheel_link:
-              {}
-            rear_right_wheel_link:
-              {}
+          front_left_wheel_link:
+            {}
+          front_right_wheel_link:
+            {}
+          rear_left_wheel_link:
+            {}
+          rear_right_wheel_link:
+            {}
+        odom:
+          {}
       Update Interval: 0
       Value: true
     - Class: rviz_default_plugins/Axes
@@ -159,14 +175,14 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 226
+      Max Intensity: 0
       Min Color: 0; 0; 0
-      Min Intensity: 82
+      Min Intensity: 0
       Name: LaserScan
       Position Transformer: XYZ
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.009999999776482582
+      Size (m): 0.029999999329447746
       Style: Flat Squares
       Topic:
         Depth: 5
@@ -190,8 +206,36 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /image_raw
+        Value: /camera/color/image_raw
       Value: true
+    - Acceleration properties:
+        Acc. vector alpha: 1
+        Acc. vector color: 255; 0; 0
+        Acc. vector scale: 1
+        Derotate acceleration: true
+        Enable acceleration: false
+      Axes properties:
+        Axes scale: 1
+        Enable axes: false
+      Box properties:
+        Box alpha: 1
+        Box color: 255; 0; 0
+        Enable box: false
+        x_scale: 1
+        y_scale: 1
+        z_scale: 1
+      Class: rviz_imu_plugin/Imu
+      Enabled: true
+      Name: Imu
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /imu/data
+      Value: true
+      fixed_frame_orientation: true
   Enabled: true
   Global Options:
     Background Color: 238; 238; 236
@@ -213,7 +257,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 10.167795181274414
+      Distance: 14.584216117858887
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1

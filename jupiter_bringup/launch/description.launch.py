@@ -9,10 +9,9 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    # robot_base = os.getenv('jupiter_BASE')
-    
+        
     urdf_path = PathJoinSubstitution(
-        [FindPackageShare("jupiter"), "description", "4wd.urdf.xacro"]
+        [FindPackageShare("jupiter"), "description", "jupiter.urdf.xacro"]
     )
 
     rviz_config_path = PathJoinSubstitution(

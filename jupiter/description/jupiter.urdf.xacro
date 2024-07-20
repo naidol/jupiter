@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot name="jupiter" xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find jupiter)/description/4wd_properties.urdf.xacro" />
+  <xacro:include filename="$(find jupiter)/description/jupiter_properties.urdf.xacro" />
   <xacro:include filename="$(find jupiter)/description/base.urdf.xacro" />
   <xacro:include filename="$(find jupiter)/description/wheel.urdf.xacro" />
   <xacro:include filename="$(find jupiter)/description/skid_steer.urdf.xacro" />
@@ -65,14 +65,6 @@
 
   <xacro:camera/>
   
-  <!-- <xacro:generic_laser>
-    <xacro:insert_block name="laser_pose" />
-  </xacro:generic_laser>
-  
-  <xacro:depth_sensor>
-    <xacro:insert_block name="depth_sensor_pose" />
-  </xacro:depth_sensor> -->
- 
   <xacro:diff_drive_controller
     wheel_separation="${wheel_pos_y * 2}"
     wheel_radius="${wheel_radius}"
