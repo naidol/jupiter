@@ -1,3 +1,10 @@
+########################################################################################################
+# Name:             description.launch.py
+# Purpose:          launch the robot URDF configuration files that describes the robot properties
+# Description:      robot physics and joints are configured and sensors are setup on the robot
+# Related Files:    located at /jupiter/description AND /jupiter/config      
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
 import os
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription

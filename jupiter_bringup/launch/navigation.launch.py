@@ -1,3 +1,10 @@
+########################################################################################################
+# Name:             navigation.launch.py
+# Purpose:          launch the Nav2 Ros2 build-in package
+# Description:      allows jupiter robot to navigate autonomously using the ROS-2 platform
+# Related Files:    uses nav2 config and maps found in /jupiter/config AND /jupiter/maps
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription

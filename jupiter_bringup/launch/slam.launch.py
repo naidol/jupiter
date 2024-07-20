@@ -1,3 +1,10 @@
+########################################################################################################
+# Name:             slam.launch.py
+# Purpose:          launch the ROS-2 SLAM system for mapping 
+# Description:      just uses the stand pre-built SLAM system contained in ROS2
+# Related Files:    config files located at /jupiter/config
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
 import os
 from launch import LaunchDescription
 from launch import LaunchContext

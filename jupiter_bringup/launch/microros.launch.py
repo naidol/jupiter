@@ -1,3 +1,10 @@
+########################################################################################################
+# Name:             microros.launch.py
+# Purpose:          launch the micro-ros agent to communicate with the micro-controller on USB0
+# Description:      jupiter robot firmware running on the ESP-32 micro-controller will connect to this agent
+# Related Files:    refer to the firmware (ESP-32) code built to use micro-ros
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression

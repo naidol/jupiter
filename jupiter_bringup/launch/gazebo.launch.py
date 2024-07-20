@@ -1,3 +1,10 @@
+########################################################################################################
+# Name:             gazebo.launch.py
+# Purpose:          launch the jupiter robot gazebo simulation
+# Description:      Simulate the robot with gazebo sensors (imu, lidar, camera)
+# Related Files:    look at all xacro files with the gazebo tags
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription

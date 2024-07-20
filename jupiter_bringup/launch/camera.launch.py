@@ -1,3 +1,11 @@
+########################################################################################################
+# Name:             camera.launch.py
+# Purpose:          USB Web-Cam launch file
+# Description:      Jupiter robot vision for face detection
+# Related Files:    /jupiter_camera folder contains the camera control programs
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
+
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory

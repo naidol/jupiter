@@ -1,4 +1,10 @@
-
+########################################################################################################
+# Name:             sensors.launch.py
+# Purpose:          start up all attached sensors (e.g. lidar, imu, camera)
+# Description:      purpose build for LD-Lidar | Bosch INO055 | USB camera
+# Related Files:    please note the IMU code is found with the ESP-32 firmware software
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription

@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+########################################################################################################
+# Name:             cam_face_detect.py
+# Purpose:          reads the cam stream and detects faces using the face_recognition package
+# Description:      take new face pics and add to the /jupiter_camera/know_faces folder
+# Related Files:    located at /jupiter_camera/known_faces      
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
 import rclpy
 from rclpy.node import Node
 import rclpy

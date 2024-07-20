@@ -1,3 +1,10 @@
+########################################################################################################
+# Name:             joystick.launch.py
+# Purpose:          launch the joystick for manual control of jupiter robot 
+# Description:      joystick functionality enabled that reads USB port and tele-ops the robot
+# Related Files:    see /jupiter/config/joystick.yaml
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration

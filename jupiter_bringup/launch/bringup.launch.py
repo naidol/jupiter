@@ -1,3 +1,11 @@
+########################################################################################################
+# Name:             bringup.launch.py
+# Purpose:          main robot bringup launch - used to startup the jupiter robot
+# Description:      ros2 humble "bringup" to be used with esp32 firmware and micro-ros
+# Related Files:    located at /jupiter_bringup/launch     
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
+
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression

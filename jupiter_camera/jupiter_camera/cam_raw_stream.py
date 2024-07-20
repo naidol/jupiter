@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-
+########################################################################################################
+# Name:             cam_raw_stream.py
+# Purpose:          reads the USB camera and publishes a raw stream on /camera/image_raw topic
+# Description:      take new face pics and add to the /jupiter_camera/know_faces folder
+# Related Files:    see cam_face_detect.py     
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
