@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-
+########################################################################################################
+# Name:             voice_tts.py
+# Purpose:          text to speech module
+# Description:      converts text on voice_tts topic to speech audible on the robots audio system
+# Related Files:    voice_asr, voice_cmd and voice_tts
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String

@@ -3,12 +3,14 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
-import openai
+from openai import OpenAI
+
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 import os
 import datetime
 
 # Set OpenAI API key
-openai.api_key = os.environ["OPENAI_API_KEY"] #make sure to set your OpenAI account key in bashrc --> export OPENAI_API_KEY = <your private key>
+ #make sure to set your OpenAI account key in bashrc --> export OPENAI_API_KEY = <your private key>
 start_sequence = "\nAI:"
 restart_sequence = "\nHuman: "
 
@@ -36,7 +38,7 @@ class VoiceCommandNode(Node):
         elif 'robot' in prompt.lower():
             gpt_output = self.get_chat_gpt3_response(prompt)
             self.send_voice_tts(gpt_output)
-    
+
     # send the message to convert text to voice via the /voice_tts topic
     def send_voice_tts(self, text):
         tts_msg = String()
@@ -48,24 +50,22 @@ class VoiceCommandNode(Node):
     def calc_time(self):
         text_time = datetime.datetime.now().strftime("%H:%M:%S") # Hour = I, Min = M, Sec = S
         return text_time
-    
+
     def calc_date(self):
         text_date = datetime.datetime.now().strftime("%d:%B:%Y")
         return text_date
-    
+
     def get_chat_gpt3_response(self, prompt):
-        response = openai.Completion.create(
-        model="text-davinci-003",
+        response = client.completions.create(model="text-davinci-003",
         prompt=prompt,
         temperature=0.9,
         max_tokens=150,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0.6,
-        stop=[" Human:", " AI:"]
-        )
+        stop=[" Human:", " AI:"])
         return response.choices[0].text
-        
+
 
 def main(args=None):
     rclpy.init(args=args)

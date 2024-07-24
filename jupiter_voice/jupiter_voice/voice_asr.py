@@ -1,4 +1,26 @@
 #!/usr/bin/env python3
+########################################################################################################
+# Name:             voice_asr.py
+# Purpose:          automatic speech recognition module
+# Description:      activated by the set wakeword, the voice commands are converted to text and the msg
+#                   is published on the voice_cmd topic
+# Related Files:    voice_cmd and voice_tts
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
+# To run this application install the following packages from the terminal command line
+# pip3 install pyttsx3
+# pip3 install SpeechRecognition
+# pip3 install nltk
+#     for nltk , run ln_nltk_download.py to download all the dependencies needed for nltk
+# pip3 install pygame 
+# pip3 install edge-tts
+
+# ## needed for the voice_mov.py module
+# sudo apt install ros-humble-nav2-simple-commander
+# sudo apt install ros-humble-tf-transformations
+# sudo apt install python3-transforms3d
+########################################################################################################
+
 
 import speech_recognition as sr
 import rclpy

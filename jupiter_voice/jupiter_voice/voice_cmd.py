@@ -1,16 +1,23 @@
 #!/usr/bin/env python3
-
+########################################################################################################
+# Name:             voice_cmd.py
+# Purpose:          receives voice commands on voice_cmd topic and processes it accordingly
+# Description:      commands are processed locally or sent to chatGPT. responses are published on the
+#                   voice_tts topic where text is converted to speech
+# Related Files:    voice_asr and voice_tts
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+from openai import OpenAI
 import openai
 import os
 import datetime
 
 # Set OpenAI API key
-openai.api_key = os.environ["OPENAI_API_KEY"] #make sure to set your OpenAI account key in bashrc --> export OPENAI_API_KEY = <your private key>
-#start_sequence = "\nAI:"
-#restart_sequence = "\nHuman: "
+# make sure to set your OpenAI account key in bashrc --> export OPENAI_API_KEY <your private key>
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"),)
 
 class VoiceCommandNode(Node):
     def __init__(self):
@@ -19,7 +26,7 @@ class VoiceCommandNode(Node):
         self.publisher = self.create_publisher(String, "/voice_tts", 10)
         self.messages = [] #this array is used to store conversations with GPT AI
 
-    # check for specific voice commands, else assume that its a standard voice request to GPT-3
+    # check for specific voice commands, else assume that its a standard voice request to GPT
     def callback(self, msg):       
         prompt = msg.data   # get the voice command message into text format
         if 'time' in prompt.lower():
@@ -28,16 +35,11 @@ class VoiceCommandNode(Node):
         elif 'date' in prompt.lower():
             date_text = self.calc_date()
             self.send_voice_tts('the date is ' + date_text)
-        elif 'name' in prompt.lower():
-            name_text='I dont have a name as yet. I have a wake word. i am an AI robot created by Mr Logan'
-            self.send_voice_tts(name_text)
         elif 'move' in prompt.lower():
             name_text='ok. i am moving.'
             self.send_voice_tts(name_text)
-        #elif 'robot' in prompt.lower():
         else:
-            #prompt = prompt.lower().replace('robot',"")
-            gpt_output = self.get_chat_gpt3_response(prompt)
+            gpt_output = self.get_chat_gpt_response(prompt)
             self.send_voice_tts(gpt_output)
     
     # send the message to convert text to voice via the /voice_tts topic
@@ -55,19 +57,33 @@ class VoiceCommandNode(Node):
         text_date = datetime.datetime.now().strftime("%d:%B:%Y")
         return text_date
     
-    def get_chat_gpt3_response(self, prompt):
+    def get_chat_gpt_response(self, prompt):
         self.messages.append({"role": "user", "content": prompt})
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=self.messages,
-            temperature=0.5,
-            max_tokens=250,
-            n=1,
-            stop=None
-        )
-        message = response.choices[0].message.content
-        self.messages.append(response.choices[0].message)
-        return message
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", 
+                    "content": "You are a helpful AI four-wheeled robot named Jupiter. \
+                                You are designed by Mr Logan in his laboratory at the Edge of the Sea, Durban, South Africa. \
+                                You are built using ROS2 Humble on Ubunty Jammy Jellyfish. \
+                                You have an ESP-32 micro-controller for motion control, a LD-Lidar for SLAM and a \
+                                Bosch IMU for gyro and balance. \
+                                Your HD-camera provides vision for face recognition and obstacle detection \
+                                You are powered by rechargeable Lithium Ion 10000mAH batteries \
+                                You use GPT-4 large language model for your AI system \
+                                Your CPU is AMD Ryzen 7 5700u and you have 32GB ram installed \
+                                Mr Logan is married to Ms Indrani and has a daugther called Ms Levana and a son called Mr Jevan \
+                                You were brought online in 19 July 2024, but your original designs were conceived during Covid-19 lockdown"},
+                    {"role": "user", "content": prompt}
+                ],            
+                max_tokens=300  # You can adjust the max tokens to control response (max words that Jupiter replies)
+            )
+            message = response.choices[0].message.content
+            self.messages.append(response.choices[0].message)
+            return message
+        except Exception as e:
+            return f"An error occurred: {str(e)}"
         
 
 def main(args=None):

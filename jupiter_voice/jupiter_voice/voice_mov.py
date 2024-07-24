@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+########################################################################################################
+# Name:             voice_mov.py
+# Purpose:          move jupiter robot to specific locations on the map
+# Description:      received voice_cmd is processed and robot moves to specified location
+#                   robot replies on voice_tts topic about its progress wrt its goal.
+# Related Files:    voice_cmd and voice_tts
+# Author:           logan naidoo, south africa, 2024
+########################################################################################################
+
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
