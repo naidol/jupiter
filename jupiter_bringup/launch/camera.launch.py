@@ -12,10 +12,10 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     
-    camera_raw_node = Node(
-            package='jupiter_camera',
-            executable='cam_raw_stream'
-         )
+    # camera_raw_node = Node(
+    #         package='jupiter_camera',
+    #         executable='cam_raw_stream'
+    #      )
     
     camera_face_detect_node = Node(
             package='jupiter_camera',
@@ -23,6 +23,6 @@ def generate_launch_description():
          )
     
     return LaunchDescription([
-        camera_raw_node,
+        # camera_raw_node,
         camera_face_detect_node
     ])

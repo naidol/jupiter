@@ -31,6 +31,12 @@ def generate_launch_description():
     joystick_launch_path = PathJoinSubstitution(
         [FindPackageShare('jupiter_bringup'), 'launch', 'joystick.launch.py']
     )
+    voice_launch_path = PathJoinSubstitution(
+        [FindPackageShare('jupiter_bringup'), 'launch', 'voice.launch.py']
+    )
+    camera_launch_path = PathJoinSubstitution(
+        [FindPackageShare('jupiter_bringup'), 'launch', 'camera.launch.py']
+    )
 
     return LaunchDescription([
         
@@ -79,6 +85,14 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(joystick_launch_path),
             condition=IfCondition(LaunchConfiguration('joy')),
-        )
+        ),
 
+        # LAUNCH THE VOICE RECOGNITION SYSTEM
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(voice_launch_path)
+        ),
+        # LAUNCH THE CAMERA FACE RECOGNITION SYSTEM
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(camera_launch_path)
+        )
     ])

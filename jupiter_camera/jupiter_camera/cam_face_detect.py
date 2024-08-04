@@ -62,7 +62,8 @@ class FaceRecognitionNode(Node):
         self.faces_list=[]
         
         # Create subscriber and publisher
-        self.image_sub = self.create_subscription(Image,"camera/image_raw",self.image_callback,10)
+        #self.image_sub = self.create_subscription(Image,"camera/image_raw",self.image_callback,10)
+        self.image_sub = self.create_subscription(Image,"/image_raw",self.image_callback,10)
         self.image_pub = self.create_publisher(Image,"face_recognition/output",10)
         self.publisher = self.create_publisher(String, "/voice_tts", 10)
 
