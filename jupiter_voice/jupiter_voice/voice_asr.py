@@ -32,6 +32,7 @@ class SpeechRecognitionNode(Node):
     def __init__(self):
         super().__init__('speech_recognition_node')
         self.publisher_ = self.create_publisher(String, 'voice_cmd', 10)
+        self.esp_led_publisher_ = self.create_publisher(String, 'esp_led', 10)
         self.timer_ = self.create_timer(2.0, self.callback)
         self.recognizer_ = sr.Recognizer()
         self.microphone_ = sr.Microphone()
@@ -49,13 +50,20 @@ class SpeechRecognitionNode(Node):
         self.publisher_.publish(msg)
         self.get_logger().info(msg.data)
 
+    def send_esp_led_msg(self, text):
+        msg = String()
+        msg.data = text
+        self.esp_led_publisher_.publish(msg)
+
     def callback(self):
         with self.microphone_ as source:
             self.recognizer_.adjust_for_ambient_noise(source)
             self.get_logger().info("Listening ... for voice commands")
+            self.send_esp_led_msg("listen")  #turn esp32 led on whilst Jupiter is listening
             audio = self.recognizer_.listen(source)
             try:
-                self.get_logger().info("Recognizing  ... convert to text")            
+                self.get_logger().info("Recognizing  ... convert to text")
+                self.send_esp_led_msg("recognize")  #turn esp32 led off whilst Jupiter is recognising speech          
                 text = self.recognizer_.recognize_google(audio)
                 self.get_logger().info(text)
                 # check if the wake word list is in the recognized text
