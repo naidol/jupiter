@@ -16,6 +16,7 @@ from launch.conditions import IfCondition, UnlessCondition
 
 
 def generate_launch_description():
+    use_sim_time = False
     ekf_config_path = PathJoinSubstitution(
         [FindPackageShare('jupiter'), 'config', 'ekf.yaml']
     )
@@ -73,7 +74,11 @@ def generate_launch_description():
 
         # LAUNCH THE ROBOT DESCRIPTION TO LOAD THE ROBOT URDF
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(description_launch_path)
+            PythonLaunchDescriptionSource(description_launch_path),
+            launch_arguments={
+                'use_sim_time': str(use_sim_time),
+                'publish_joints': 'false',
+            }.items()
         ),
 
         # LAUNCH THE SENSORS ATTACHED TO THE ROBOT (E.G. LIDAR, CAMERA, ETC.)
