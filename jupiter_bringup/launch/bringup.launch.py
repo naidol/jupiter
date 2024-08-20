@@ -77,7 +77,7 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(description_launch_path),
             launch_arguments={
                 'use_sim_time': str(use_sim_time),
-                'publish_joints': 'false',
+                'publish_joints': 'True',                                   # was set to 'False'
             }.items()
         ),
 

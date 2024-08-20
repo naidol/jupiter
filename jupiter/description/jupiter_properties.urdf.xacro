@@ -8,9 +8,9 @@
 
   <xacro:property name="wheel_radius" value="0.045" />
   <xacro:property name="wheel_width" value="0.045" />
-  <xacro:property name="wheel_pos_x" value="0.087" />
+  <xacro:property name="wheel_pos_x" value="0.090" />
   <xacro:property name="wheel_pos_y" value="0.175" />
-  <xacro:property name="wheel_pos_z" value="-0.034" />
+  <xacro:property name="wheel_pos_z" value="-0.035" />  <!-- wheel_z_pos = 1/2 x base_height - wheel_radius -->
   <xacro:property name="wheel_mass" value=".150" />
   <xacro:property name="wheel_torque" value="20" />
 
