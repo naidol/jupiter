@@ -32,7 +32,7 @@
     <joint name="camera_to_base_link" type="fixed">
       <parent link="base_link"/>
       <child link="camera_link"/>
-      <origin xyz="0.120 0 0.020" rpy="0 0 0"/>
+      <origin xyz="0.115 0 0.130" rpy="0 0 0"/>
     </joint>
 
     
