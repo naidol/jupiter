@@ -16,7 +16,9 @@ from launch.conditions import IfCondition, UnlessCondition
 
 
 def generate_launch_description():
+    
     use_sim_time = False
+    
     ekf_config_path = PathJoinSubstitution(
         [FindPackageShare('jupiter'), 'config', 'ekf.yaml']
     )
@@ -77,7 +79,7 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(description_launch_path),
             launch_arguments={
                 'use_sim_time': str(use_sim_time),
-                'publish_joints': 'True',                                   # was set to 'False'
+                'publish_joints': 'False',                                   # was set to 'False'
             }.items()
         ),
 
