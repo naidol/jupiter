@@ -61,7 +61,7 @@ def generate_launch_description():
             parameters=[
                 ekf_config_path
             ],
-            remappings=[("odometry/filtered", "odom")]
+            remappings=[("odometry/filtered", "/odom")]    # was "odom"
         ),
 
         # LAUNCH MICRO-ROS AGENT TO COMMUNICATE WITH THE MICRO-CONTROLLER MOTOR DRIVER AND IMU HARDWARE
