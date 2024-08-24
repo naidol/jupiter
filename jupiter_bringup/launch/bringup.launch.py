@@ -40,6 +40,9 @@ def generate_launch_description():
     camera_launch_path = PathJoinSubstitution(
         [FindPackageShare('jupiter_bringup'), 'launch', 'camera.launch.py']
     )
+    clock_launch_path = PathJoinSubstitution(
+        [FindPackageShare('jupiter_bringup'), 'launch', 'clock.launch.py']
+    )
 
     return LaunchDescription([
         
@@ -73,6 +76,12 @@ def generate_launch_description():
                 'base_serial_port': LaunchConfiguration("base_serial_port")
             }.items()
         ),
+
+        # LAUNCH CLOCK SYNC BETWEEN HOST PC AND ESP32 MICRO-CONTROLLER
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(clock_launch_path)
+        ),
+
 
         # LAUNCH THE ROBOT DESCRIPTION TO LOAD THE ROBOT URDF
         IncludeLaunchDescription(
