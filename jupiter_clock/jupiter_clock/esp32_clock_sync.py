@@ -15,7 +15,7 @@ class ClockPublisher(Node):
     def __init__(self):
         super().__init__('clock_node')
         self.publisher_ = self.create_publisher(Time, '/clock', 10)
-        self.timer = self.create_timer(0.1, self.publish_clock)  # Publish at 10 Hz
+        self.timer = self.create_timer(0.02, self.publish_clock)  # Publish at 50 Hz = 0.02 secs
         self.clock = Clock()
 
     def publish_clock(self):
