@@ -19,30 +19,23 @@ def generate_launch_description():
     
     use_sim_time = False
     
-    ekf_config_path = PathJoinSubstitution(
-        [FindPackageShare('jupiter'), 'config', 'ekf.yaml']
-    )
-    microros_launch_path = PathJoinSubstitution(
-        [FindPackageShare('jupiter_bringup'), 'launch', 'microros.launch.py']
-    )
-    sensors_launch_path = PathJoinSubstitution(
-        [FindPackageShare('jupiter_bringup'), 'launch', 'sensors.launch.py']
-    )
-    description_launch_path = PathJoinSubstitution(
-        [FindPackageShare('jupiter_bringup'), 'launch', 'description.launch.py']
-    )
-    joystick_launch_path = PathJoinSubstitution(
-        [FindPackageShare('jupiter_bringup'), 'launch', 'joystick.launch.py']
-    )
-    voice_launch_path = PathJoinSubstitution(
-        [FindPackageShare('jupiter_bringup'), 'launch', 'voice.launch.py']
-    )
-    camera_launch_path = PathJoinSubstitution(
-        [FindPackageShare('jupiter_bringup'), 'launch', 'camera.launch.py']
-    )
-    clock_launch_path = PathJoinSubstitution(
-        [FindPackageShare('jupiter_bringup'), 'launch', 'clock.launch.py']
-    )
+    ekf_config_path = PathJoinSubstitution([FindPackageShare('jupiter'), 'config', 'ekf.yaml'])
+
+    microros_launch_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'microros.launch.py'])
+    
+    sensors_launch_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'sensors.launch.py'])
+    
+    description_launch_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'description.launch.py'])
+    
+    joystick_launch_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'joystick.launch.py'])
+    
+    voice_launch_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'voice.launch.py'])
+    
+    camera_launch_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'camera.launch.py'])
+    
+    clock_launch_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'clock.launch.py'])
+
+    wheel_joint_states_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'wheel_joint_states.launch.py'])
 
     return LaunchDescription([
         
@@ -110,5 +103,9 @@ def generate_launch_description():
         # LAUNCH THE CAMERA FACE RECOGNITION SYSTEM
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(camera_launch_path)
+        ),
+        # LAUNCH THE WHEEL JOINT STATES
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(wheel_joint_states_path)
         )
     ])
