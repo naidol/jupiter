@@ -33,9 +33,11 @@ def generate_launch_description():
     
     camera_launch_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'camera.launch.py'])
     
-    clock_launch_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'clock.launch.py'])
+    # clock_launch_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'clock.launch.py'])
 
     wheel_joint_states_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'wheel_joint_states.launch.py'])
+
+    gui_launch_path = PathJoinSubstitution([FindPackageShare('jupiter_bringup'), 'launch', 'gui.launch.py'])
 
     return LaunchDescription([
         
@@ -71,41 +73,34 @@ def generate_launch_description():
         ),
 
         # LAUNCH CLOCK SYNC BETWEEN HOST PC AND ESP32 MICRO-CONTROLLER
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(clock_launch_path)
-        ),
-
+        # IncludeLaunchDescription(PythonLaunchDescriptionSource(clock_launch_path)),
 
         # LAUNCH THE ROBOT DESCRIPTION TO LOAD THE ROBOT URDF
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(description_launch_path),
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(description_launch_path),
             launch_arguments={
                 'use_sim_time': str(use_sim_time),
-                'publish_joints': 'False',                                   # was set to 'False'
+                'publish_joints': 'False',            # was set to 'False'
             }.items()
         ),
 
         # LAUNCH THE SENSORS ATTACHED TO THE ROBOT (E.G. LIDAR, CAMERA, ETC.)
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(sensors_launch_path)
-        ),
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(sensors_launch_path)),
 
         # LAUNCH JOYSTICK, IF THE JOYSTICK IS ENABLED
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(joystick_launch_path),
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(joystick_launch_path),
             condition=IfCondition(LaunchConfiguration('joy')),
         ),
 
         # LAUNCH THE VOICE RECOGNITION SYSTEM
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(voice_launch_path)
-        ),
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(voice_launch_path)),
+        
         # LAUNCH THE CAMERA FACE RECOGNITION SYSTEM
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(camera_launch_path)
-        ),
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(camera_launch_path)),
+        
         # LAUNCH THE WHEEL JOINT STATES
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(wheel_joint_states_path)
-        )
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(wheel_joint_states_path)),
+        
+        # LAUNCH THE MAIN DISPLAY GUI
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(gui_launch_path))
+
     ])

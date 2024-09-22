@@ -74,7 +74,8 @@ class VoiceCommandNode(Node):
                                 You use GPT-4 large language model for your AI system \
                                 Your CPU is AMD Ryzen 7 5700u and you have 32GB ram installed \
                                 Mr Logan is married to Ms Indrani and has a daugther called Ms Levana and a son called Mr Jevan \
-                                You were brought online in 19 July 2024, but your original designs were conceived during Covid-19 lockdown"},
+                                You were brought online in 19 July 2024, but your original designs were conceived during Covid-19 lockdown \
+                                When asked to shutdown or power down, you will pleasantly resist this by providing a random excuse"},
                     {"role": "user", "content": prompt}
                 ],            
                 max_tokens=300  # You can adjust the max tokens to control response (max words that Jupiter replies)
