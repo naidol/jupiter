@@ -33,7 +33,7 @@ class SpeechRecognitionNode(Node):
         super().__init__('speech_recognition_node')
         self.publisher_ = self.create_publisher(String, 'voice_cmd', 10)
         self.esp_led_publisher_ = self.create_publisher(String, 'esp_led', 10)
-        self.timer_ = self.create_timer(2.0, self.callback)
+        self.timer_ = self.create_timer(1.0, self.callback)
         self.recognizer_ = sr.Recognizer()
         self.microphone_ = sr.Microphone()
 
@@ -70,10 +70,12 @@ class SpeechRecognitionNode(Node):
                 if any(item in text.lower() for item in self.wakeword_tokens):
                     if len(text.split()) >= 4: # only process audio if 4 or more words
                         self.send_voice_command(text)
+                        # text = ""   # clear the text to prevent repeating commands due to out-of sync comms and other sw loops
                 else: 
                     self.get_logger().warn("Wakeword not detected")
             except sr.UnknownValueError:
                 self.get_logger().warn('Unable to recognize speech')
+                # self.send_voice_command("I am sorry. Unable to recognize your request.")
             except sr.RequestError as e:
                 self.get_logger().error(f'Request error: {e}')
     

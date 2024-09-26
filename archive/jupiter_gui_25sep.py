@@ -43,14 +43,15 @@ class JupiterGuiNode(Node):
 
         # Initialize subscribers for ROS topics
         self.labels = []
+        self.speaking_image_active = False
         self.bridge = CvBridge()
 
         # Create a dictionary to store image and esp_led labels
         self.speaking_image_label = None
         self.esp_led_label = None
-        self.speaking_image_path = self.get_image_path("jupiter_face.jpg")
+        self.speaking_image_path = self.get_image_path("jupiter_talk.jpg")
         self.listening_image_path = self.get_image_path("jupiter_listen.jpg")
-        self.get_logger().info(f"speaking_image_path: {self.speaking_image_path}")
+        # self.get_logger().info(f"speaking_image_path: {self.speaking_image_path}")
 
         for idx, topic in enumerate(topics):
             if topic == "/image_raw":
@@ -93,53 +94,71 @@ class JupiterGuiNode(Node):
 
     def create_speaking_image_callback(self, speaking_image_label):
         def speaking_image_callback(msg):           # msg = /voice_tts msg.data
-            try:
-                # Open the JPG image
-                speaking_image = PILImage.open(self.speaking_image_path)
-                speaking_image = speaking_image.resize((512, 300))  # Resize image to fit the frame
+            if not self.speaking_image_active:
+                try:
+                    # Open the JPG image
+                    speaking_image = PILImage.open(self.speaking_image_path)
+                    speaking_image = speaking_image.resize((512, 300))  # Resize image to fit the frame
 
-                # Overlay the received text on the image
-                draw = ImageDraw.Draw(speaking_image)
-                font = ImageFont.load_default()  # Use default font
-                # font = ImageFont.load("arial.pil")  # Use custom font
-                text_position = (10, 260)  # Position the text at the bottom of the image
-                text_color = (255, 255, 255)  # White text
-                draw.text(text_position, msg.data, font=font, fill=text_color)   # voice_tts contains the msg.data to print
+                    # Overlay the received text on the image
+                    draw = ImageDraw.Draw(speaking_image)
+                    font = ImageFont.load_default()  # Use default font
+                    text_position = (10, 260)  # Position the text at the bottom of the image
+                    text_color = (255, 255, 255)  # White text
+                    draw.text(text_position, msg.data, font=font, fill=text_color)   # voice_tts contains the msg.data to print
 
-                # Convert the PIL image with text to a Tkinter image
-                tk_image = ImageTk.PhotoImage(speaking_image)
-                speaking_image_label.config(image=tk_image, text="")        #was text=""
-                speaking_image_label.image = tk_image
+                    # Convert the PIL image with text to a Tkinter image
+                    tk_image = ImageTk.PhotoImage(speaking_image)
+                    speaking_image_label.config(image=tk_image, text="")        #was text=""
+                    speaking_image_label.image = tk_image
 
-                # delay(3)
-                self.get_logger().info(f"Speaking image with text displayed: {msg.data}")
+                    self.speaking_image_active = True
+                    self.get_logger().info(f"Speaking image with text displayed: {msg.data}")
+                except Exception as e:
+                    self.get_logger().error(f"Error displaying speaking image: {e}")
+            # else:
+            #     try:
+            #         # Open the JPG image
+            #         listening_image = PILImage.open(self.listening_image_path)
+            #         listening_image = speaking_image.resize((512, 300))  # Resize image to fit the frame
 
-            except Exception as e:
-                self.get_logger().error(f"Error displaying speaking image: {e}")
+            #         # Overlay the received text on the image
+            #         draw = ImageDraw.Draw(listening_image)
+            #         font = ImageFont.load_default()  # Use default font
+            #         text_position = (10, 260)  # Position the text at the bottom of the image
+            #         text_color = (255, 255, 255)  # White text
+            #         draw.text(text_position, "LISTENING for a COMMAND", font=font, fill=text_color)
+
+            #         # Convert the PIL image with text to a Tkinter image
+            #         tk_image = ImageTk.PhotoImage(listening_image)
+            #         speaking_image_label.config(image=tk_image, text="")
+            #         speaking_image_label.image = tk_image
+
+            #         self.speaking_image_active = True
+            #         self.get_logger().info(f"Speaking image with text displayed: {msg.data}")
+            #     except Exception as e:
+            #         self.get_logger().error(f"Error displaying speaking image: {e}")
 
         return speaking_image_callback
 
     def create_esp_led_callback(self):
         def esp_led_callback(msg):
+            self.get_logger().info(f"Received message on /esp_led: {msg.data}")
             if msg.data == "listen":
-                try:
+                self.get_logger().info(f"Speaking image active status: {self.speaking_image_active}")
+                if self.speaking_image_label:
                     self.speaking_image_label.config(image="", text="Listening for command...")  # Ensure the image is removed
                     self.speaking_image_label.image = None  # Reset the image attribute
-                    self.get_logger().info("Speaking image removed from display.")   
-                except Exception as e:
-                    self.get_logger().error(f"Cannot remove speaking image: {e}")
+                    self.get_logger().info("Speaking image removed from display.")
 
+                self.speaking_image_active = False  # Stop showing the speaking image
             elif msg.data == "recognize":
-                try:
-                    self.speaking_image_label.config(image="", text="Please Wait ... recognizing command")  # Ensure the image is removed
-                    self.speaking_image_label.image = None  # Reset the image attribute
-                    self.get_logger().info("Speaking image removed from display.")   
-                except Exception as e:
-                    self.get_logger().error(f"Cannot remove speaking image: {e}")
+                # self.speaking_image_label.config(image="", text="Please Wait ... recognizing command")  # Ensure the image is removed
+                # self.speaking_image_label.image = None  # Reset the image attribute
+                self.get_logger().info(f"Message not 'listen': {msg.data}")
 
             if self.esp_led_label:
                 self.esp_led_label.config(text="Listening for command..." if msg.data == "listen" else "Waiting for ESP LED command...")
-                
         return esp_led_callback
 
     # just get the os path to the package & folder containing the location of specified image

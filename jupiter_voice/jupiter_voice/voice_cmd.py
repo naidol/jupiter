@@ -41,6 +41,8 @@ class VoiceCommandNode(Node):
         else:
             gpt_output = self.get_chat_gpt_response(prompt)
             self.send_voice_tts(gpt_output)
+        # clear the msg, needed since previous msg may be re-processed
+        # msg.data = ""
     
     # send the message to convert text to voice via the /voice_tts topic
     def send_voice_tts(self, text):
