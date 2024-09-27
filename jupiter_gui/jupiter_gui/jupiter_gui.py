@@ -24,7 +24,7 @@ class JupiterGuiNode(Node):
         # Initialize Tkinter main window with fixed size of 1024x600
         self.root = Tk()
         self.root.title("Jupiter Robot")
-        self.root.geometry("810x490")      #was 1024x600
+        self.root.geometry("1024x600")      #was 1024x600
 
         # Set up 4 frames (2x2) with fixed dimensions and borders
         frame_width = 400       #was 512
