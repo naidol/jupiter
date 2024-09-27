@@ -100,7 +100,7 @@ class JupiterGuiNode(Node):
                 draw = ImageDraw.Draw(speaking_image)
                 font = ImageFont.load_default()  # Use default font
                 # font = ImageFont.load("arial.pil")  # Use custom font
-                text_position = (10, 200)  #  was 10, 260 ----- Position the text at the bottom of the image
+                text_position = (10, 230)  #  was 10, 260 ----- Position the text at the bottom of the image
                 text_color = (255, 255, 255)  # White text
                 draw.text(text_position, msg.data, font=font, fill=text_color)   # voice_tts contains the msg.data to print
 
