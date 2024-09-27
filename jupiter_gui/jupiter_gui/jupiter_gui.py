@@ -24,16 +24,16 @@ class JupiterGuiNode(Node):
         # Initialize Tkinter main window with fixed size of 1024x600
         self.root = Tk()
         self.root.title("Jupiter Robot")
-        self.root.geometry("1024x600")
+        self.root.geometry("810x490")      #was 1024x600
 
         # Set up 4 frames (2x2) with fixed dimensions and borders
-        frame_width = 512
-        frame_height = 300
+        frame_width = 400       #was 512
+        frame_height = 240      #was 300
         self.frames = []
         for i in range(2):
             for j in range(2):
-                frame = Frame(self.root, borderwidth=5, relief="solid", width=frame_width, height=frame_height)
-                frame.grid(row=i, column=j, padx=10, pady=10)
+                frame = Frame(self.root, borderwidth=2, relief="solid", width=frame_width, height=frame_height)
+                frame.grid(row=i, column=j, padx=2, pady=2)  # was padx 10 pady 10
                 frame.grid_propagate(False)
                 frame.pack_propagate(False)
                 self.frames.append(frame)
@@ -62,10 +62,8 @@ class JupiterGuiNode(Node):
                 self.speaking_image_label.pack(expand=True, fill='both')
                 self.create_subscription(String, topic, self.create_speaking_image_callback(self.speaking_image_label), 10)
                 self.create_subscription(String, "/esp_led", self.create_esp_led_callback(), 10)
-            # elif topic == "/esp_led":
-            #     self.esp_led_label = Label(self.frames[idx], text="Waiting for ESP LED command...", font=("Arial", 12), bg="gray")
-            #     self.esp_led_label.pack(expand=True, fill='both')
-            #     # self.create_subscription(String, topic, self.create_esp_led_callback(), 10)
+            elif topic == "/esp_led":
+                pass
             else:
                 label = Label(self.frames[idx], text="Waiting for data...", font=("Arial", 12), wraplength=480, bg="gray")
                 label.pack(expand=True, fill='both', padx=10, pady=10)
@@ -81,7 +79,7 @@ class JupiterGuiNode(Node):
         def camera_image_callback(msg):
             try:
                 cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
-                cv_image = cv2.resize(cv_image, (512, 300))
+                cv_image = cv2.resize(cv_image, (400, 240))         #was 512 , 300
                 cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
                 pil_image = PILImage.fromarray(cv_image)
                 tk_image = ImageTk.PhotoImage(image=pil_image)
@@ -96,13 +94,13 @@ class JupiterGuiNode(Node):
             try:
                 # Open the JPG image
                 speaking_image = PILImage.open(self.speaking_image_path)
-                speaking_image = speaking_image.resize((512, 300))  # Resize image to fit the frame
+                speaking_image = speaking_image.resize((400, 240))  # was 512 x 300 Resize image to fit the frame
 
                 # Overlay the received text on the image
                 draw = ImageDraw.Draw(speaking_image)
                 font = ImageFont.load_default()  # Use default font
                 # font = ImageFont.load("arial.pil")  # Use custom font
-                text_position = (10, 260)  # Position the text at the bottom of the image
+                text_position = (10, 200)  #  was 10, 260 ----- Position the text at the bottom of the image
                 text_color = (255, 255, 255)  # White text
                 draw.text(text_position, msg.data, font=font, fill=text_color)   # voice_tts contains the msg.data to print
 
