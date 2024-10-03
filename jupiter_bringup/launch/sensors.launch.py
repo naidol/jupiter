@@ -1,7 +1,7 @@
 ########################################################################################################
 # Name:             sensors.launch.py
 # Purpose:          start up all attached sensors (e.g. lidar, imu, camera)
-# Description:      purpose build for LD-Lidar | Bosch INO055 | USB camera
+# Description:      purpose build for LD-Lidar 
 # Related Files:    please note the IMU code is found with the ESP-32 firmware software
 # Author:           logan naidoo, south africa, 2024
 ########################################################################################################
@@ -35,29 +35,6 @@ def generate_launch_description():
                 {'enable_angle_crop_func': False},
                 {'angle_crop_min': 135.0},
                 {'angle_crop_max': 225.0}
-            ]
-        ),
-
-        # # base_link to base_laser tf node
-        # Node(
-        #     package='tf2_ros',
-        #     executable='static_transform_publisher',
-        #     name='base_link_to_base_laser_ld19',
-        #     arguments=['0.060','0.000','0.145','0','0','0','base_link','laser_link']
-        # ),
-
-        # LAUNCH THE USB CAMERA SENSOR 
-        Node(
-            name='camera_node',
-            package='usb_cam',
-            executable='usb_cam_node_exe',
-            output='screen',
-            # namespace='camera',
-            parameters=[
-                {'image_size': [640,480]}, # was 640,480
-                {'time_per_frame': [1, 6]},
-                {'camera_frame_id': 'camera_link'},
-                {'video_device': '/dev/video0'} # was removed
             ]
         )
     ])

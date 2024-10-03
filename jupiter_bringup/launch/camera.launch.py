@@ -11,18 +11,28 @@ from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
+
+    return LaunchDescription([
+
+        # LAUNCH THE USB CAMERA SENSOR USING THE ROS2 PACKAGE 'usb_cam' WHICH PUBLISHES /image_raw TOPIC
+        Node(
+            name='camera_node',
+            package='usb_cam',
+            executable='usb_cam_node_exe',
+            output='screen',
+            # namespace='camera',
+            parameters=[
+                {'image_size': [640,480]}, # was 640,480
+                {'time_per_frame': [1, 6]},
+                {'camera_frame_id': 'camera_link'},
+                {'video_device': '/dev/video0'} # was removed
+            ]
+        ),
     
-    # camera_raw_node = Node(
-    #         package='jupiter_camera',
-    #         executable='cam_raw_stream'
-    #      )
-    
-    camera_face_detect_node = Node(
+        # LAUNCH THE FACE DETECTION NODE
+        Node(
+            name='camera_face_detect_node',
             package='jupiter_camera',
             executable='cam_face_detect'
-         )
-    
-    return LaunchDescription([
-        # camera_raw_node,
-        camera_face_detect_node
+            )
     ])
