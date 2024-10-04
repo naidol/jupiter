@@ -38,11 +38,12 @@ class VoiceCommandNode(Node):
         elif 'move' in prompt.lower():
             name_text='ok. i am moving.'
             self.send_voice_tts(name_text)
+        elif 'voice system error' in prompt.lower():
+            error_text = 'detecting voice system fault. i will attempt to resolve.'
+            self.send_voice_tts(error_text)
         else:
             gpt_output = self.get_chat_gpt_response(prompt)
             self.send_voice_tts(gpt_output)
-        # clear the msg, needed since previous msg may be re-processed
-        # msg.data = ""
     
     # send the message to convert text to voice via the /voice_tts topic
     def send_voice_tts(self, text):

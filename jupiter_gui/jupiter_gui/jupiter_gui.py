@@ -47,7 +47,7 @@ class JupiterGuiNode(Node):
 
         # Create a dictionary to store image and esp_led labels
         self.speaking_image_label = None
-        self.esp_led_label = None
+        self.voice_id_label = None
         self.speaking_image_path = self.get_image_path("jupiter_face.jpg")
         self.listening_image_path = self.get_image_path("jupiter_listen.jpg")
         self.get_logger().info(f"speaking_image_path: {self.speaking_image_path}")
@@ -61,8 +61,8 @@ class JupiterGuiNode(Node):
                 self.speaking_image_label = Label(self.frames[idx], text="Waiting for voice_tts command...", font=("Arial", 12), bg="gray")
                 self.speaking_image_label.pack(expand=True, fill='both')
                 self.create_subscription(String, topic, self.create_speaking_image_callback(self.speaking_image_label), 10)
-                self.create_subscription(String, "/esp_led", self.create_esp_led_callback(), 10)
-            elif topic == "/esp_led":
+                self.create_subscription(String, "/voice_id", self.create_voice_id_callback(), 10)
+            elif topic == "/voice_id":
                 pass
             else:
                 label = Label(self.frames[idx], text="Waiting for data...", font=("Arial", 12), wraplength=480, bg="gray")
@@ -117,8 +117,8 @@ class JupiterGuiNode(Node):
 
         return speaking_image_callback
 
-    def create_esp_led_callback(self):
-        def esp_led_callback(msg):
+    def create_voice_id_callback(self):
+        def voice_id_callback(msg):
             if msg.data == "listen":
                 try:
                     self.speaking_image_label.config(image="", text="Listening for command...")  # Ensure the image is removed
@@ -135,10 +135,10 @@ class JupiterGuiNode(Node):
                 except Exception as e:
                     self.get_logger().error(f"Cannot remove speaking image: {e}")
 
-            if self.esp_led_label:
-                self.esp_led_label.config(text="Listening for command..." if msg.data == "listen" else "Waiting for ESP LED command...")
+            if self.voice_id_label:
+                self.voice_id_label.config(text="Listening for command..." if msg.data == "listen" else "Waiting for ESP LED command...")
                 
-        return esp_led_callback
+        return voice_id_callback
 
     # just get the os path to the package & folder containing the location of specified image
     def get_image_path(self,file_name):
@@ -165,7 +165,7 @@ class JupiterGuiNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    topics = ["/topic1", "/esp_led", "/voice_tts", "/image_raw"]
+    topics = ["/topic1", "/voice_id", "/voice_tts", "/image_raw"]
     node = JupiterGuiNode(topics)
     try:
         node.run_gui()
