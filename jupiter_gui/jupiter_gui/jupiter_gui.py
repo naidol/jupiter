@@ -41,11 +41,13 @@ class JupiterGuiNode(Node):
         # Track which topics are being subscribed to (max 4)
         assert len(topics) <= 4, "GUI supports a maximum of 4 topics."
 
-        # Initialize subscribers for ROS topics
+        # Initialize publisher for ROS topics
+        self.voice_tts_pub = self.create_publisher(String, "/voice_tts", 10)
+
         self.labels = []
         self.bridge = CvBridge()
 
-        # Create a dictionary to store image and esp_led labels
+        # Create a dictionary to store image and voice labels
         self.speaking_image_label = None
         self.voice_id_label = None
         self.speaking_image_path = self.get_image_path("jupiter_face.jpg")
@@ -114,6 +116,7 @@ class JupiterGuiNode(Node):
 
             except Exception as e:
                 self.get_logger().error(f"Error displaying speaking image: {e}")
+                self.send_voice_tts("I cannot display my image now.  I will try to resolve")
 
         return speaking_image_callback
 
@@ -136,8 +139,8 @@ class JupiterGuiNode(Node):
                     self.get_logger().error(f"Cannot remove speaking image: {e}")
 
             if self.voice_id_label:
-                self.voice_id_label.config(text="Listening for command..." if msg.data == "listen" else "Waiting for ESP LED command...")
-                
+                self.voice_id_label.config(text="Listening for command..." if msg.data == "listen" else "Waiting for ESP LED command...")   
+
         return voice_id_callback
 
     # just get the os path to the package & folder containing the location of specified image
@@ -154,6 +157,14 @@ class JupiterGuiNode(Node):
             raise RuntimeError("Failed to find ROS2 workspace directory")
         package_directory = os.path.join(ros2_workspace_directory, package_name)
         return os.path.join(package_directory, folder_name, file_name)
+
+    # send msg on /voice_tts
+    # send the message to convert text to voice via the /voice_tts topic
+    def send_voice_tts(self, text):
+        tts_msg = String()
+        tts_msg.data = text
+        self.get_logger().info(text)
+        self.voice_tts_pub.publish(tts_msg)
 
     def update_gui(self):
         rclpy.spin_once(self, timeout_sec=0.1)
