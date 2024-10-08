@@ -41,7 +41,7 @@ class JupiterGuiNode(Node):
         # Track which topics are being subscribed to (max 4)
         assert len(topics) <= 4, "GUI supports a maximum of 4 topics."
 
-        # Initialize voice_tts publisher for ROS topics
+        # Initialize publisher for ROS topics
         self.voice_tts_pub = self.create_publisher(String, "/voice_tts", 10)
 
         self.labels = []
@@ -122,28 +122,11 @@ class JupiterGuiNode(Node):
 
     def create_voice_id_callback(self):
         def voice_id_callback(msg):
-            if msg.data == "listening":
+            if msg.data == "listen":
                 try:
-                    # Open the JPG image
-                    speaking_image = PILImage.open(self.speaking_image_path)
-                    speaking_image = speaking_image.resize((500, 260))  # was 512 x 300 Resize image to fit the frame
-
-                    # Overlay the received text on the image
-                    draw = ImageDraw.Draw(speaking_image)
-                    font = ImageFont.load_default()  # Use default font
-                    # font = ImageFont.load("arial.pil")  # Use custom font
-                    text_position = (10, 230)  #  was 10, 260 ----- Position the text at the bottom of the image
-                    text_color = (255, 255, 255)  # White text
-                    draw.text(text_position, msg.data, font=font, fill=text_color)   # voice_tts contains the msg.data to print
-
-                    # Convert the PIL image with text to a Tkinter image
-                    tk_image = ImageTk.PhotoImage(speaking_image)
-                    self.speaking_image_label.config(image=tk_image, text="")        #was text=""
-                    self.speaking_image_label.image = tk_image
-
-                    # self.speaking_image_label.config(image="", text="Listening for command...")  # Ensure the image is removed
-                    # self.speaking_image_label.image = None  # Reset the image attribute
-                    # self.get_logger().info("Speaking image removed from display.")   
+                    self.speaking_image_label.config(image="", text="Listening for command...")  # Ensure the image is removed
+                    self.speaking_image_label.image = None  # Reset the image attribute
+                    self.get_logger().info("Speaking image removed from display.")   
                 except Exception as e:
                     self.get_logger().error(f"Cannot remove speaking image: {e}")
 
@@ -175,6 +158,7 @@ class JupiterGuiNode(Node):
         package_directory = os.path.join(ros2_workspace_directory, package_name)
         return os.path.join(package_directory, folder_name, file_name)
 
+    # send msg on /voice_tts
     # send the message to convert text to voice via the /voice_tts topic
     def send_voice_tts(self, text):
         tts_msg = String()

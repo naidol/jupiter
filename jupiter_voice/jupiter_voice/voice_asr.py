@@ -33,7 +33,7 @@ class SpeechRecognitionNode(Node):
         super().__init__('speech_recognition_node')
         self.voice_cmd_publisher_ = self.create_publisher(String, 'voice_cmd', 10)      # publishes voice data
         self.voice_id_publisher_ = self.create_publisher(String, 'voice_id', 10)        # publishes voice indicator either 'listen' or 'recognize'
-        self.timer_ = self.create_timer(1.0, self.timer_callback)                             # timer callback for voice asr system at 1 hz
+        self.timer_ = self.create_timer(1.0, self.timer_callback)                       # timer callback for voice asr system at 1 hz
         self.recognizer_ = sr.Recognizer()
         self.microphone_ = sr.Microphone()
 
@@ -48,9 +48,9 @@ class SpeechRecognitionNode(Node):
         text = text.lower().replace(self.wakeword2,"")  # add below self.wakeword3_ if you add to wake word list in constructor above
         msg.data = text                                 # load the ROS2 String msg with the user command excluding the wake word
         self.voice_cmd_publisher_.publish(msg)          # publish the /voice_cmd message
-        self.get_logger().info(msg.data)
+        # self.get_logger().info(msg.data)
 
-    def send_voice_id_msg(self, text):
+    def send_voice_id_msg(self, text):                  # just packages the voice_id text into String msg to publish on /voice_id topic
         msg = String()
         msg.data = text
         self.voice_id_publisher_.publish(msg)
@@ -58,26 +58,25 @@ class SpeechRecognitionNode(Node):
     def timer_callback(self):
         with self.microphone_ as source:
             self.recognizer_.adjust_for_ambient_noise(source)
-            self.get_logger().info("Listening ... for voice commands")
-            self.send_voice_id_msg("listen")            # robot is in 'listen' mode
+            # self.get_logger().info("Listening ... for voice commands")
+            self.send_voice_id_msg("listening")            # robot is in 'listen' mode
             audio = self.recognizer_.listen(source)
         try:
-            self.get_logger().info("Recognizing  ... convert to text")
-            self.send_voice_id_msg("recognize")     # robot is coverting voice to text - 'recognize' mode          
+            # self.get_logger().info("Recognizing  ... convert to text")
+            self.send_voice_id_msg("recognize")         # robot is coverting voice to text - 'recognize' mode          
             text = self.recognizer_.recognize_google(audio)
-            # self.get_logger().info(text)
             # check if the wake word list is in the recognized text
             if any(item in text.lower() for item in self.wakeword_tokens):
-                if len(text.split()) >= 4:          # only process audio if 4 or more words
+                if len(text.split()) >= 3:              # only process audio if 3 or more words
                     self.send_voice_cmd_msg(text)
             else: 
-                self.get_logger().warn("Wakeword not detected")
+                # self.get_logger().warn("Wakeword not detected")
                 self.send_voice_id_msg("wakeword not detected")
         except sr.UnknownValueError:
-            self.get_logger().warn('Unable to recognize speech')
+            # self.get_logger().warn('Unable to recognize speech')
             self.send_voice_id_msg("unable to decipher speech")
         except sr.RequestError as e:
-            self.get_logger().error(f'Request error: {e}')
+            # self.get_logger().error(f'Request error: {e}')
             self.send_voice_id_msg("voice system error")
             self.send_voice_cmd_msg("voice system error")
     

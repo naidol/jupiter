@@ -91,6 +91,9 @@ def generate_launch_description():
             condition=IfCondition(LaunchConfiguration('joy')),
         ),
 
+        # LAUNCH THE MAIN DISPLAY GUI
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(gui_launch_path)),
+
         # LAUNCH THE VOICE RECOGNITION SYSTEM
         IncludeLaunchDescription(PythonLaunchDescriptionSource(voice_launch_path)),
         
@@ -98,9 +101,6 @@ def generate_launch_description():
         IncludeLaunchDescription(PythonLaunchDescriptionSource(camera_launch_path)),
         
         # LAUNCH THE WHEEL JOINT STATES
-        IncludeLaunchDescription(PythonLaunchDescriptionSource(wheel_joint_states_path)),
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(wheel_joint_states_path))
         
-        # LAUNCH THE MAIN DISPLAY GUI
-        IncludeLaunchDescription(PythonLaunchDescriptionSource(gui_launch_path))
-
     ])
