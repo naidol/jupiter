@@ -23,7 +23,9 @@ setup(
             "voice_asr = jupiter_voice.voice_asr:main",
             "voice_tts = jupiter_voice.voice_tts:main",
             "voice_cmd = jupiter_voice.voice_cmd:main",
-            "voice_mov = jupiter_voice.voice_mov:main"
+            "voice_mov = jupiter_voice.voice_mov:main",
+            "voice_wsp = jupiter_voice.voice_wsp:main",
+            "voice_pyttsx3 = jupiter_voice.voice_pyttsx3:main"
         ],
     },
 )

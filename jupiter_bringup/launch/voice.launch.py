@@ -13,7 +13,7 @@ def generate_launch_description():
     
     voice_recognition_node = Node(
             package='jupiter_voice',
-            executable='voice_asr'
+            executable='voice_wsp'
          )
     
     voice_command_node = Node(
