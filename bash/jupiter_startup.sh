@@ -26,7 +26,7 @@ source ~/jupiter_ws/install/setup.bash
 ## SETUP LD LIDAR 
 source ~/ldlidar_ros2_ws/install/setup.bash
 
-# SETUP OPENAI GPT API KEY
+
 
 
 
