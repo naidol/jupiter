@@ -25,7 +25,10 @@ setup(
             "voice_cmd = jupiter_voice.voice_cmd:main",
             "voice_mov = jupiter_voice.voice_mov:main",
             "voice_wsp = jupiter_voice.voice_wsp:main",
-            "voice_pyttsx3 = jupiter_voice.voice_pyttsx3:main"
+            "voice_pyttsx3 = jupiter_voice.voice_pyttsx3:main",
+            "voice_gtts = jupiter_voice.voice_gtts:main",
+            "voice_etts = jupiter_voice.voice_etts:main",
+            "gpt_memory = jupiter_voice.gpt_memory:main"
         ],
     },
 )

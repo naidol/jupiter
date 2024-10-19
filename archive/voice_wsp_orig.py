@@ -11,7 +11,7 @@
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String, Bool
+from std_msgs.msg import String
 import sounddevice as sd
 import numpy as np
 import whisper
@@ -21,15 +21,10 @@ class SpeechRecognitionNode(Node):
         super().__init__('speech_recognition_node')
         
         # Publisher to the /voice_cmd topic
-        self.voice_cmd_publisher_ = self.create_publisher(String, '/voice_cmd', 10)      # publishes voice data
-        self.voice_id_publisher_ = self.create_publisher(String, '/voice_id', 10)        # publishes voice indicator either 'listen' or 'recognize'
-        # Subscriber to /audio_playback to know if audio is playing
-        self.audio_playback_sub = self.create_subscription(
-            Bool,
-            '/audio_playback',
-            self.audio_playback_callback,
-            10)
-
+        # self.publisher_ = self.create_publisher(String, '/voice_cmd', 10)
+        self.voice_cmd_publisher_ = self.create_publisher(String, 'voice_cmd', 10)      # publishes voice data
+        self.voice_id_publisher_ = self.create_publisher(String, 'voice_id', 10)        # publishes voice indicator either 'listen' or 'recognize'
+        
         # Load Whisper model
         self.model = whisper.load_model("base")
         
@@ -38,28 +33,12 @@ class SpeechRecognitionNode(Node):
         self.duration = 10  # Recording duration in seconds
 
         # Set up a timer to call the function periodically
-        # self.timer = self.create_timer(10.0, self.timer_callback)
+        self.timer = self.create_timer(10.0, self.timer_callback)
 
         #setup robot voice wakewords 
         self.wakeword1 = 'jupiter'                      # robot wakeword
         self.wakeword2 = 'tubidy'                       # may sound like robot wakeword
         self.wakeword_tokens = ['jupiter','tubidy']     # add more tokens for similar sounding wake words here
-
-        # Flag to indicate if audio is playing
-        self.audio_playing = False
-        
-        # Initialize the Whisper model for speech recognition
-        self.model = whisper.load_model("base")
-
-        # Start the speech recognition process
-        self.listen_for_commands()
-
-    def audio_playback_callback(self, msg):
-        self.audio_playing = msg.data
-        if self.audio_playing:
-            self.get_logger().info('Audio is playing, pausing Whisper...')
-        else:
-            self.get_logger().info('Audio finished, resuming Whisper...')
     
     def send_voice_cmd_msg(self, text):
         msg = String()
@@ -93,24 +72,25 @@ class SpeechRecognitionNode(Node):
         self.get_logger().info("Transcription complete.")
         return result['text']
 
-    def listen_for_commands(self):
-        # Start listening loop for Whisper
-        while rclpy.ok():
-            # Only listen if audio is NOT playing
-            if not self.audio_playing:
-                audio_data = self.record_audio()
-                text_output = self.transcribe_audio(audio_data)
-                # check if the wake word list is in the recognized text
-                if any(item in text_output.lower() for item in self.wakeword_tokens):
-                    if len(text_output.split()) >= 3:              # only process audio if 3 or more words
-                        self.send_voice_cmd_msg(text_output)
-                else: 
-                    # self.get_logger().warn("Wakeword not detected")
-                    self.send_voice_id_msg("wakeword not detected")
-            else:
-                # Wait and retry after a small delay when audio is playing
-                rclpy.spin_once(self, timeout_sec=0.2)
+    def timer_callback(self):
+        """Handles recording audio and publishing the transcribed text."""
         
+        audio_data = self.record_audio()
+        text_output = self.transcribe_audio(audio_data)
+        # check if the wake word list is in the recognized text
+        if any(item in text_output.lower() for item in self.wakeword_tokens):
+            if len(text_output.split()) >= 3:              # only process audio if 3 or more words
+                self.send_voice_cmd_msg(text_output)
+        else: 
+            # self.get_logger().warn("Wakeword not detected")
+            self.send_voice_id_msg("wakeword not detected")
+        
+        # Publish the recognized text
+        # msg = String()
+        # msg.data = text_output
+        # self.voice_cmd_publisher_.publish(msg)
+        # self.get_logger().info(f"Published: {text_output}")
+
 def main(args=None):
     rclpy.init(args=args)
     node = SpeechRecognitionNode()

@@ -23,7 +23,7 @@ def generate_launch_description():
     
     voice_speech_node = Node(
             package='jupiter_voice',
-            executable='voice_tts'
+            executable='voice_etts'
          )
 
     return LaunchDescription([
