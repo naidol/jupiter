@@ -18,22 +18,26 @@ import rclpy
 class GPTMemoryNode(Node):
     def __init__(self):
         super().__init__('gpt_memory_node')
-        self.past_conversations = []
+        self.user_conversations = {}  # Dictionary to store conversation history for each user
         self.publisher = self.create_publisher(String, '/voice_tts', 10)
         
         # Set up the OpenAI client
         self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))  # Fetch the API key from the environment
 
-        # File to store the conversation history
-        self.memory_file = "gpt_memory.json"
+        # Directory to store user conversation files
+        self.home_dir = os.path.expanduser("~")
+        self.memory_dir = os.path.join(self.home_dir,"jupiter_ws/src/jupiter/jupiter_gpt/gpt_memory_users")
+        os.makedirs(self.memory_dir, exist_ok=True)  # Create the directory if it doesn't exist
+        self.get_logger().info(self.memory_dir)
 
-        # Load past conversations from file (if exists)
-        self.load_memory()
+    def get_memory_file(self, user_id):
+        """Returns the path to the memory file for a specific user."""
+        return os.path.join(self.memory_dir, f"{user_id}_memory.json")
 
-    def call_gpt_api(self, prompt):
-        """Calls the OpenAI API with conversation memory."""
+    def call_gpt_api(self, user_id, prompt):
+        """Calls the OpenAI API with conversation memory for the given user."""
         
-        # Prepare the conversation history in the format of role-based messages
+        # Always start with the system message to define the role of the AI
         messages = [{"role": "system", "content": "You are a helpful AI four-wheeled robot named Jupiter. \
                                 You are designed by Mr Logan in his laboratory at the Edge of the Sea, Durban, South Africa. \
                                 You are built using ROS2 Humble on Ubunty Jammy Jellyfish. \
@@ -48,26 +52,24 @@ class GPTMemoryNode(Node):
                                 You were brought online in 19 July 2024, but your original designs were conceived during Covid-19 lockdown \
                                 When asked to shutdown or power down, you will pleasantly resist this by providing a random excuse"}]
         
-        # Append past conversations to the messages list
-        for conversation in self.past_conversations:
-            messages.append({"role": "user", "content": conversation['user']})
-            messages.append({"role": "assistant", "content": conversation['ai']})
+        # Append past conversations (user and assistant) for the current user
+        if user_id in self.user_conversations:
+            for conversation in self.user_conversations[user_id]:
+                messages.append({"role": "user", "content": conversation['user']})
+                messages.append({"role": "assistant", "content": conversation['ai']})
 
-        # Append the latest user input to the messages
+        # Append the latest user input
         messages.append({"role": "user", "content": prompt})
 
-        # Debug: Log the messages to ensure the system message is included
-        #self.get_logger().info(f"Sending messages to GPT API: {messages}")
-
         try:
-            # Call the GPT API using the client method
+            # Call the GPT API
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=messages,
-                max_tokens=300
+                max_tokens=150
             )
 
-            # Extract the AI's response correctly
+            # Extract the AI's response
             message = response.choices[0].message.content
             return message.strip()
 
@@ -75,40 +77,54 @@ class GPTMemoryNode(Node):
             self.get_logger().error(f"Error with GPT API: {e}")
             return f"Error: Unable to process your request. Details: {e}"
 
-    def process_user_prompt(self, prompt):
-        # Call the GPT API to get the AI response
-        ai_response = self.call_gpt_api(prompt)
+    def process_user_prompt(self, user_id, prompt):
+        """Processes a user prompt and generates a response for the specific user."""
+        
+        # Load user's conversation history if not already loaded
+        if user_id not in self.user_conversations:
+            self.load_memory(user_id)
 
-        # Add the new conversation to memory
-        self.past_conversations.append({
+        # Call the GPT API to get the AI response for the specific user
+        ai_response = self.call_gpt_api(user_id, prompt)
+
+        # Initialize user conversation history if not present
+        if user_id not in self.user_conversations:
+            self.user_conversations[user_id] = []
+
+        # Add the new conversation to the user's memory
+        self.user_conversations[user_id].append({
             'user': prompt,
             'ai': ai_response
         })
 
-        # Save the updated memory to file
-        self.save_memory()
+        # Save the updated memory for the user
+        self.save_memory(user_id)
 
         # Publish the GPT response on the /voice_tts topic
         response_msg = String()
         response_msg.data = ai_response
         self.publisher.publish(response_msg)
 
-    def save_memory(self):
-        """Saves the past conversations to a file."""
+    def save_memory(self, user_id):
+        """Saves the conversation history for a specific user."""
         try:
-            with open(self.memory_file, 'w') as f:
-                json.dump(self.past_conversations, f)
+            memory_file = self.get_memory_file(user_id)
+            with open(memory_file, 'w') as f:
+                json.dump(self.user_conversations[user_id], f)
         except Exception as e:
-            self.get_logger().error(f"Failed to save memory: {e}")
+            self.get_logger().error(f"Failed to save memory for user {user_id}: {e}")
 
-    def load_memory(self):
-        """Loads the past conversations from a file (if exists)."""
-        if os.path.exists(self.memory_file):
+    def load_memory(self, user_id):
+        """Loads the conversation history for a specific user from file."""
+        memory_file = self.get_memory_file(user_id)
+        if os.path.exists(memory_file):
             try:
-                with open(self.memory_file, 'r') as f:
-                    self.past_conversations = json.load(f)
+                with open(memory_file, 'r') as f:
+                    self.user_conversations[user_id] = json.load(f)
             except Exception as e:
-                self.get_logger().error(f"Failed to load memory: {e}")
+                self.get_logger().error(f"Failed to load memory for user {user_id}: {e}")
+        else:
+            self.user_conversations[user_id] = []  # Initialize with empty list if no history exists
 
 def main(args=None):
     rclpy.init(args=args)
@@ -125,4 +141,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-
