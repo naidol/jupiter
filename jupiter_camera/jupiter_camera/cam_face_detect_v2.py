@@ -6,6 +6,7 @@
 # Related Files:    located at /jupiter_camera/known_faces      
 # Author:           logan naidoo, south africa, 2024
 ########################################################################################################
+
 import rclpy
 from rclpy.node import Node
 from cv_bridge import CvBridge
@@ -26,10 +27,8 @@ class FaceRecognitionNode(Node):
         self.known_face_encodings = []
         self.known_face_names = []
         
-        # To store unknown face data for later use
+        # To store unknown face encoding for later use
         self.unknown_face_encoding = None
-        self.unknown_face_image = None  # Store the frame with the unknown face
-        self.unknown_face_location = None  # Store the location of the unknown face
         self.last_prompt_time = None  # Store the time of the last request for a name
         self.name_request_interval = 60  # 60 seconds cooldown for requesting unknown user's name
 
@@ -83,7 +82,7 @@ class FaceRecognitionNode(Node):
         
         # Recognize faces
         face_names = []
-        for face_encoding, face_location in zip(face_encodings, face_locations):
+        for face_encoding in face_encodings:
             # Compare face encoding with known face encodings
             matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
             name = "Human"  # Default to "Human" for unknown faces
@@ -96,7 +95,7 @@ class FaceRecognitionNode(Node):
                 name = self.known_face_names[best_match_index]
             else:
                 # Unknown face detected, request the name via greet_face
-                self.handle_unknown_face(face_encoding, frame, face_location)
+                self.handle_unknown_face(face_encoding)
             
             face_names.append(name)
             self.publish_user_id(name)
@@ -110,15 +109,13 @@ class FaceRecognitionNode(Node):
         output_msg = self.bridge.cv2_to_imgmsg(frame, encoding="bgr8")
         self.image_pub.publish(output_msg)
 
-    def handle_unknown_face(self, face_encoding, frame, face_location):
+    def handle_unknown_face(self, face_encoding):
         """Handle the case when an unknown face is detected, ensuring a 60-second delay between prompts."""
         current_time = time.time()
 
         # Only ask for the name if 60 seconds have passed since the last prompt
         if self.last_prompt_time is None or (current_time - self.last_prompt_time > self.name_request_interval):
             self.unknown_face_encoding = face_encoding
-            self.unknown_face_image = frame  # Save the frame with the unknown face
-            self.unknown_face_location = face_location  # Save the location of the unknown face
             self.greet_face("Human")  # Ask for their name
             self.last_prompt_time = current_time  # Update the last prompt time
 
@@ -150,30 +147,27 @@ class FaceRecognitionNode(Node):
         self.new_user_name = msg.data
         
         # Store the new user's name and face encoding if we received a name
-        if self.unknown_face_encoding is not None and self.new_user_name:
+        if self.unknown_face_encoding and self.new_user_name:
             self.known_face_encodings.append(self.unknown_face_encoding)
             self.known_face_names.append(self.new_user_name)
 
             # Save the face encoding and name into the known_faces folder
-            self.save_new_user(self.unknown_face_image, self.unknown_face_location, self.new_user_name)
+            self.save_new_user(self.unknown_face_encoding, self.new_user_name)
             self.get_logger().info(f"Stored new user: {self.new_user_name}")
 
             # Reset the unknown face encoding
             self.unknown_face_encoding = None
-            self.unknown_face_image = None
-            self.unknown_face_location = None
             self.new_user_name = None
 
-    def save_new_user(self, frame, face_location, user_name):
-        """Save the new user's face as a .jpg image in the known_faces folder."""
+    def save_new_user(self, face_encoding, user_name):
+        """Save the new user's face encoding as an image and store it in the known_faces folder."""
         known_faces_dir = self.get_known_faces_path("")
         new_face_image_path = os.path.join(known_faces_dir, f"{user_name}.jpg")
         
-        # Crop the face from the frame based on face_location (top, right, bottom, left)
-        top, right, bottom, left = face_location
-        face_image = frame[top:bottom, left:right]  # Crop the face
+        # Create a dummy image from the encoding (since face_recognition doesn't provide an image)
+        face_image = face_recognition.face_encodings_to_image([face_encoding])
 
-        # Save the cropped face as a .jpg file
+        # Save the image as a jpg file
         cv2.imwrite(new_face_image_path, face_image)
         self.get_logger().info(f"Saved new face image for {user_name} at {new_face_image_path}")
 

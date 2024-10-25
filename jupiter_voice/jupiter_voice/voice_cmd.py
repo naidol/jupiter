@@ -15,6 +15,7 @@ import openai
 import os
 import datetime
 from jupiter_gpt.gpt_memory import GPTMemoryNode  # Import the GPTMemoryNode class from package
+import re  # needed to remove punctuation from text strings
 
 
 class VoiceCommandNode(Node):
@@ -23,6 +24,7 @@ class VoiceCommandNode(Node):
         self.subscription = self.create_subscription(String, "/voice_cmd", self.callback, 10)
         self.user_id_sub = self.create_subscription(String, "/user_id", self.user_id_callback, 10)
         self.publisher = self.create_publisher(String, "/voice_tts", 10)
+        self.new_user_id_pub = self.create_publisher(String,"/new_user_id", 10) # publish the new_user_id when unknown Human provides name
         self.messages = [] #this array is used to store conversations with GPT AI
         # Create an instance of GPTMemoryNode
         self.gpt_memory_node = GPTMemoryNode()
@@ -35,6 +37,7 @@ class VoiceCommandNode(Node):
     # check for specific voice commands, else assume that its a standard voice request to GPT
     def callback(self, msg):       
         prompt = msg.data   # get the voice command message into text format
+        prompt = re.sub(r'[^\w\s]','', prompt)
         if 'time' in prompt.lower():
             time_text = self.calc_time()
             self.send_voice_tts('the time is ' + time_text)
@@ -47,6 +50,13 @@ class VoiceCommandNode(Node):
         elif 'voice system error' in prompt.lower():
             error_text = 'detecting voice system fault. i will attempt to resolve.'
             self.send_voice_tts(error_text)
+        elif 'my name is' in prompt.lower():
+            new_user_id = prompt.lower().replace("my name is","")
+            new_user_id = new_user_id.strip()
+            new_user_id_msg = String()
+            new_user_id_msg.data = new_user_id
+            self.new_user_id_pub.publish(new_user_id_msg)
+            self.send_voice_tts('Hello, nice to meet you ' + new_user_id)
         else:
             # Call GPTMemoryNode's method to process the user prompt
             self.gpt_memory_node.process_user_prompt(self.user_id, prompt)
