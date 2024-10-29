@@ -85,13 +85,14 @@ class GPTMemoryNode(Node):
             self.load_memory(user_id)
 
         # Initialize user conversation history if not present
-        if user_id not in self.user_conversations:
-            # Set the initial conversation to recognize the user's name from the user_id
-            self.user_conversations[user_id] = [
-                {'user': "My name is " + user_id, 'ai': "Nice to meet you, " + user_id + "!"}
-            ]
-            # Save the memory immediately after initializing the conversation
-            self.save_memory(user_id)
+        # if user_id not in self.user_conversations:
+        #     # Set the initial conversation to recognize the user's name from the user_id
+        #     self.user_conversations[user_id].append = ({
+        #         'user': "My name is " + user_id, 
+        #         'ai': "Nice to meet you, " + user_id + "!"
+        #     })
+        #     # Save the memory immediately after initializing the conversation
+        #     self.save_memory(user_id)
 
         # Call the GPT API to get the AI response for the specific user
         ai_response = self.call_gpt_api(user_id, prompt)

@@ -38,6 +38,7 @@ class VoiceCommandNode(Node):
     def callback(self, msg):       
         prompt = msg.data   # get the voice command message into text format
         prompt = re.sub(r'[^\w\s]','', prompt)
+        prompt = prompt.strip()  # remove leading and trailing spaces
         if 'time' in prompt.lower():
             time_text = self.calc_time()
             self.send_voice_tts('the time is ' + time_text)
@@ -56,7 +57,7 @@ class VoiceCommandNode(Node):
             new_user_id_msg = String()
             new_user_id_msg.data = new_user_id
             self.new_user_id_pub.publish(new_user_id_msg)
-            self.send_voice_tts('Hello, nice to meet you ' + new_user_id)
+            self.gpt_memory_node.process_user_prompt(new_user_id, prompt)
         else:
             # Call GPTMemoryNode's method to process the user prompt
             self.gpt_memory_node.process_user_prompt(self.user_id, prompt)

@@ -128,7 +128,7 @@ class FaceRecognitionNode(Node):
         else:
             if face in self.faces_list:
                 elapsed_time = time.time() - self.remember_face_timer
-                if elapsed_time > 300.0:
+                if elapsed_time > 90.0:
                     self.send_voice_tts(f"Welcome back {face}!")
                     self.remember_face_timer = time.time()
             else:
