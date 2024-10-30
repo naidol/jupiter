@@ -31,7 +31,7 @@ class FaceRecognitionNode(Node):
         self.unknown_face_image = None  # Store the frame with the unknown face
         self.unknown_face_location = None  # Store the location of the unknown face
         self.last_prompt_time = None  # Store the time of the last request for a name
-        self.name_request_interval = 60  # 60 seconds cooldown for requesting unknown user's name
+        self.name_request_interval = 120  # 120 seconds cooldown for requesting unknown user's name
 
         # Get the path to the known_faces folder
         known_faces_dir = self.get_known_faces_path("")
@@ -86,7 +86,7 @@ class FaceRecognitionNode(Node):
         for face_encoding, face_location in zip(face_encodings, face_locations):
             # Compare face encoding with known face encodings
             matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
-            name = "Human"  # Default to "Human" for unknown faces
+            name = "human"  # Default to "human" for unknown faces
             
             # Find best match
             face_distances = face_recognition.face_distance(self.known_face_encodings, face_encoding)
@@ -116,18 +116,15 @@ class FaceRecognitionNode(Node):
         self.image_pub.publish(output_msg)
 
     def handle_unknown_face(self, face_encoding, frame, face_location):
-        """Handle the case when an unknown face is detected, ensuring a 60-second delay between prompts."""
-        current_time = time.time()
-        # Only ask for the name if 60 seconds have passed since the last prompt
-        if self.last_prompt_time is None or (current_time - self.last_prompt_time > self.name_request_interval):
-            self.unknown_face_encoding = face_encoding
-            self.unknown_face_image = frame  # Save the frame with the unknown face
-            self.unknown_face_location = face_location  # Save the location of the unknown face
-            self.greet_face("Human")  # Ask for their name
+        """Handle the case when an unknown face is detected, ensuring a 60-second delay between prompts."""       
+        self.unknown_face_encoding = face_encoding
+        self.unknown_face_image = frame  # Save the frame with the unknown face
+        self.unknown_face_location = face_location  # Save the location of the unknown face
+        # self.greet_face("human")  # Ask for their name
             
 
     def greet_face(self, face_name):
-        if face_name == "Human":
+        if face_name == "human":
             self.send_voice_tts("Hello! I don't know your name. Please tell me your name.")
         elif face_name in self.known_face_names:
             self.send_voice_tts(f"Welcome back {face_name}!")

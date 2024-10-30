@@ -1,7 +1,8 @@
 ########################################################################################################
 # Name:             voice.launch.py
-# Purpose:          lauch custom built voice recognition system for jupiter robot
-# Description:      voice_asr = automatic speech recognition | voice_tts = text-to-speech
+# Purpose:          launch custom built voice recognition system for jupiter robot
+# Description:      voice_wsp = automatic speech recognition | voice_etts = text-to-speech
+#                   voice_cmd = process voice commands 
 # Related Files:    see package /jupiter_voice
 # Author:           logan naidoo, south africa, 2024
 ########################################################################################################
