@@ -100,7 +100,12 @@ class FaceRecognitionNode(Node):
             
             face_names.append(name)
             self.publish_user_id(name)
-            
+
+            current_time = time.time()
+            if self.last_prompt_time is None or (current_time - self.last_prompt_time > self.name_request_interval):
+                self.greet_face(name)
+                self.last_prompt_time = current_time  # Update the last prompt time
+                  
         # Draw rectangles and names on frame
         for (top, right, bottom, left), name in zip(face_locations, face_names):
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
@@ -113,27 +118,19 @@ class FaceRecognitionNode(Node):
     def handle_unknown_face(self, face_encoding, frame, face_location):
         """Handle the case when an unknown face is detected, ensuring a 60-second delay between prompts."""
         current_time = time.time()
-
         # Only ask for the name if 60 seconds have passed since the last prompt
         if self.last_prompt_time is None or (current_time - self.last_prompt_time > self.name_request_interval):
             self.unknown_face_encoding = face_encoding
             self.unknown_face_image = frame  # Save the frame with the unknown face
             self.unknown_face_location = face_location  # Save the location of the unknown face
             self.greet_face("Human")  # Ask for their name
-            self.last_prompt_time = current_time  # Update the last prompt time
+            
 
-    def greet_face(self, face):
-        if face == "Human":
+    def greet_face(self, face_name):
+        if face_name == "Human":
             self.send_voice_tts("Hello! I don't know your name. Please tell me your name.")
-        else:
-            if face in self.faces_list:
-                elapsed_time = time.time() - self.remember_face_timer
-                if elapsed_time > 90.0:
-                    self.send_voice_tts(f"Welcome back {face}!")
-                    self.remember_face_timer = time.time()
-            else:
-                self.faces_list.append(face)
-                self.send_voice_tts(f"Hello {face}!")
+        elif face_name in self.known_face_names:
+            self.send_voice_tts(f"Welcome back {face_name}!")
 
     def send_voice_tts(self, text):
         tts_msg = String()
