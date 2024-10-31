@@ -165,7 +165,8 @@ class FaceRecognitionNode(Node):
         
         # Crop the face from the frame based on face_location (top, right, bottom, left)
         top, right, bottom, left = face_location
-        face_image = frame[top:bottom, left:right]  # Crop the face
+        #face_image = frame[top:bottom, left:right]  # Crop the face
+        face_image = frame  # Do not crop the image
 
         # Save the cropped face as a .jpg file
         cv2.imwrite(new_face_image_path, face_image)
